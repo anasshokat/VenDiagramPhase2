@@ -1,0 +1,176 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProjectRedAlert
+{
+    class Evaluation
+    {
+        StackArray stack;
+        
+        // Operation Performming Method
+        int[] Preform(char Operator, int[] Array1, int[] Array2)
+        {
+            int[] temp = new int[0];
+            sort(ref Array1);
+            sort(ref Array2);
+            int LA1 = Array1.Length;
+            int LA2 = Array2.Length;
+            if (Operator == '⋃')
+            {
+                return (Union(Array1, Array2, LA1, LA2));
+                
+            }
+            else if (Operator == '⋂')
+            {
+                return (Intersection(Array1, Array2, LA1, LA2));
+            }
+            else if (Operator == '`' || Operator == '-')
+            {
+                return(Difference(Array1,Array2,LA1,LA2));
+            }
+            else
+            {
+                return temp;
+            }
+        }
+
+        // Union Method 
+        int[] Union(int[] Array1, int[] Array2, int LA1, int LA2)
+        {
+            int[] result = new int[LA1 + LA2];
+            int index = 0, i = 0, j = 0;
+            while (i < LA1 && j < LA2)
+            {
+                if (Array1[i] < Array2[j])
+                {
+                    if (Array1[i] != 0)
+                    {
+                        result[index++] = Array1[i++];        
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                else if (Array2[j] < Array1[i])
+                {
+                    if (Array2[j] != 0)
+                    {
+                        result[index++] = Array2[j++];
+                    }
+                    else
+                    {
+                        j++;
+                    }
+                }
+                else
+                {
+                    if (Array2[j] != 0)
+                    {
+                        result[index++] = Array2[j++];
+                        i++;
+                    }
+                    else
+                    {
+                        j++; i++;
+                    }
+                }
+                
+            }
+            while (i < LA1)
+            {
+                if (Array1[i] != 0)
+                {
+                    result[index++] = Array1[i++];     
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            while (j < LA2)
+            {
+                if (Array2[j] != 0)
+                {
+                    result[index++] = Array2[j++];
+                }
+                else
+                {
+                    j++;
+                }
+            }
+            return result;
+        }
+        static void sort(ref int[] Arr) {
+            int n = Arr.Length;
+            for (int i = 0; i < n - 1 ; i++)
+            {
+                int min = i;
+                for (int j = i + 1; j < n; j++)
+                {
+                    if (Arr[j] < Arr[min])
+                    {
+                        min = j;
+                    }
+                    int temp = Arr[min];
+                    Arr[min] = Arr[i];
+                    Arr[i] = temp;
+                }
+            }
+        }
+        //method Intersection 
+        int[] Intersection(int[] Array1, int[] Array2, int LA1, int LA2)
+        {
+            int[] result = new int[LA1 + LA2];
+            int index = 0, i = 0, j = 0;
+          
+            while (i < LA1 && j  < LA2)
+            {
+                if (Array1[i] < Array2[j])
+                {
+                    i++;
+                }
+                else if (Array2[j] < Array1[i])
+                {
+                    j++;
+                }
+                else
+                {
+                    result[index++] = Array2[j++];
+                    i++;
+                }
+            }
+            return result; 
+        }
+        //Method Difference 
+        int[] Difference(int[] Array1, int[] Array2, int LA1, int LA2)
+        {
+            int[] result = new int[LA1 + LA2];
+            int i = 0, j = 0, index = 0;
+            bool flag = true;
+            while (i < LA1)
+            {
+                for (j = 0; j < LA2; )
+                {
+                    if (Array1[i] == Array2[j])
+                    {
+                        flag = false;
+                        break;
+                    }
+                    j++;
+                }
+                if (flag == true)
+                {
+                    result[index] = Array1[i];
+                    index++;
+                }
+                flag = true;
+                i++;
+            }
+            return result;
+        }
+    }
+}
